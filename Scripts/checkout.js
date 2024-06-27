@@ -1,6 +1,23 @@
-import {cart, removeFromCart} from '../data/cart.js';
+import {cart, removeFromCart, calculateCartQuantity} from '../data/cart.js';
 import {products} from '../data/products.js';
+import { displayValue } from './utils/dom.js';
 import {formatCurrency} from './utils/money.js';
+
+
+
+displayCartQuantity('.js-checkout-header-middle-section');
+
+function displayCartQuantity(selector) {
+  if (calculateCartQuantity() === 0) {
+    displayValue(selector, `Your cart is empty`);
+  } else if (calculateCartQuantity() === 1) {
+    displayValue(selector, `Checkout (${calculateCartQuantity()} item)`);
+  } else {
+    displayValue(selector, `Checkout (${calculateCartQuantity()} items)`);
+  }
+}
+
+
 
 let cartSummaryHTML = '';
 
@@ -109,5 +126,6 @@ document.querySelectorAll('.js-delete-link')
         `.js-cart-item-container-${productId}`
       );
       container.remove();
-    })
-  })
+      displayCartQuantity('.js-checkout-header-middle-section');
+    });
+  });
