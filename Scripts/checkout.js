@@ -53,10 +53,14 @@ cart.forEach((cartItem) => {
           </div>
           <div class="product-quantity">
             <span>
-              Quantity: <span class="quantity-label">${cartItem.quantity}</span>
+              Quantity: <span class="quantity-label js-quantity-label-${productId}">${cartItem.quantity}</span>
             </span>
-            <span class="update-quantity-link link-primary">
+            <span class="update-quantity-link link-primary js-update-quantity-link" data-product-id="${matchingProduct.id}">
               Update
+            </span>
+            <input class="quantity-input js-quantity-input-${matchingProduct.id}" data-product-id="${matchingProduct.id}">
+            <span class="save-quantity-link link-primary js-save-quantity-link" data-product-id="${matchingProduct.id}">
+              Save
             </span>
             <span class="delete-quantity-link link-primary js-delete-link" 
               data-product-id="${matchingProduct.id}">
@@ -129,3 +133,34 @@ document.querySelectorAll('.js-delete-link')
       displayCartQuantity('.js-checkout-header-middle-section');
     });
   });
+
+  document.querySelectorAll('.js-update-quantity-link')
+  .forEach((link) => {
+    link.addEventListener('click', () => {
+      const productId = link.dataset.productId;
+
+      document.querySelector(`.js-cart-item-container-${productId}`).classList.add(`is-editing-quantity`);
+      
+      console.log(document.querySelector(`.js-cart-item-container-${productId}`));
+    });
+  });
+
+  document.querySelectorAll('.js-save-quantity-link')
+    .forEach((link) => {
+      
+      link.addEventListener('click', () => {
+        const productId = link.dataset.productId;
+        document.querySelector(`.js-cart-item-container-${productId}`).classList.remove(`is-editing-quantity`);
+
+        const quantityInputElem = document.querySelector(`.js-quantity-input-${productId}`);
+        const quantityInput = Number(quantityInputElem.value);
+          
+        cart.forEach((cartItem) => {
+          if (cartItem.productId === productId) {
+            document.querySelector(`.js-quantity-label-${productId}`)
+              .innerHTML = cartItem.quantity += quantityInput;
+          }
+        });
+      });
+    });
+    
