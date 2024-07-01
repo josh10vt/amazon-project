@@ -1,22 +1,8 @@
-import {cart, removeFromCart, calculateCartQuantity} from '../data/cart.js';
+import {cart, displayCartQuantity, removeFromCart, updateQuantity} from '../data/cart.js';
 import {products} from '../data/products.js';
-import { displayValue } from './utils/dom.js';
 import {formatCurrency} from './utils/money.js';
 
-
-
 displayCartQuantity('.js-checkout-header-middle-section');
-
-function displayCartQuantity(selector) {
-  if (calculateCartQuantity() === 0) {
-    displayValue(selector, `Your cart is empty`);
-  } else if (calculateCartQuantity() === 1) {
-    displayValue(selector, `Checkout (${calculateCartQuantity()} item)`);
-  } else {
-    displayValue(selector, `Checkout (${calculateCartQuantity()} items)`);
-  }
-}
-
 
 
 let cartSummaryHTML = '';
@@ -131,36 +117,52 @@ document.querySelectorAll('.js-delete-link')
       );
       container.remove();
       displayCartQuantity('.js-checkout-header-middle-section');
-    });
   });
+});
 
-  document.querySelectorAll('.js-update-quantity-link')
+document.querySelectorAll('.js-update-quantity-link')
+.forEach((link) => {
+  link.addEventListener('click', () => {
+    const productId = link.dataset.productId;
+
+    document.querySelector(`.js-cart-item-container-${productId}`).classList.add(`is-editing-quantity`);
+
+    console.log(document.querySelector(`.js-cart-item-container-${productId}`));
+  });
+});
+
+  document.querySelectorAll('.js-save-quantity-link')
   .forEach((link) => {
+    
     link.addEventListener('click', () => {
       const productId = link.dataset.productId;
 
-      document.querySelector(`.js-cart-item-container-${productId}`).classList.add(`is-editing-quantity`);
-      
-      console.log(document.querySelector(`.js-cart-item-container-${productId}`));
+      const newQuantityElem = document.querySelector(`.js-quantity-input-${productId}`);
+      const newQuantity = Number(newQuantityElem.value);
+        
+      updateQuantity(productId, newQuantity);
+
+      document.querySelector(`.js-cart-item-container-${productId}`).classList.remove(`is-editing-quantity`);
     });
   });
 
-  document.querySelectorAll('.js-save-quantity-link')
-    .forEach((link) => {
-      
-      link.addEventListener('click', () => {
-        const productId = link.dataset.productId;
-        document.querySelector(`.js-cart-item-container-${productId}`).classList.remove(`is-editing-quantity`);
 
-        const quantityInputElem = document.querySelector(`.js-quantity-input-${productId}`);
-        const quantityInput = Number(quantityInputElem.value);
-          
-        cart.forEach((cartItem) => {
-          if (cartItem.productId === productId) {
-            document.querySelector(`.js-quantity-label-${productId}`)
-              .innerHTML = cartItem.quantity += quantityInput;
-          }
-        });
-      });
-    });
-    
+
+  /*
+document.querySelectorAll('.js-save-quantity-link')
+  .forEach((link) => {
+  document.body.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+      const productId = link.dataset.productId;
+      const newQuantityElem = document.querySelector(`.js-quantity-input-${productId}`);
+      const newQuantity = Number(newQuantityElem.value);
+
+      updateQuantity(productId, newQuantity);
+
+      document.querySelector(`.js-cart-item-container-${productId}`).classList.remove(`is-editing-quantity`);
+    }
+  });
+});
+
+*/
+
