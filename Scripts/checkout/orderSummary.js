@@ -1,12 +1,15 @@
-import {cart, displayCartQuantity, removeFromCart, updateQuantity, updateDeliveryOption} from '../../data/cart.js';
+import {cart, removeFromCart, updateQuantity, updateDeliveryOption} from '../../data/cart.js';
 import {products, getProduct} from '../../data/products.js';
 import {formatCurrency} from '../utils/money.js';
 import {hello} from 'https://unpkg.com/supersimpledev@1.0.1/hello.esm.js';
 import dayjs from 'https://unpkg.com/dayjs@1.11.10/esm/index.js';
-import {deliveryOptions, getDeliveryOption} from '../../data/deliveryOptions.js';
+import {deliveryOptions, getDeliveryOption, calculateDeliveryDate} from '../../data/deliveryOptions.js';
 import {renderPaymentSummary} from './paymentSummary.js';
+import {renderCheckoutHeader} from './checkoutHeader.js';
 
-displayCartQuantity('.js-checkout-header-middle-section');
+
+//displayCartQuantity('.js-checkout-header-middle-section');
+renderCheckoutHeader();
 
 export function renderOrderSummary() {
   let cartSummaryHTML = '';
@@ -21,21 +24,15 @@ export function renderOrderSummary() {
 
     const deliveryOption = getDeliveryOption(deliveryOptionId);
 
-    const todaysDate = dayjs();
-    const deliveryDate = todaysDate.add(
-      deliveryOption.deliveryDays,
-      'days'
-    );
+    const pickedDeliveryDate = calculateDeliveryDate(deliveryOption);
 
-    const dayString = deliveryDate.format(
-      'dddd, MMMM D'
-    );
+    
 
     cartSummaryHTML += `
       <div class="cart-item-container 
         js-cart-item-container-${matchingProduct.id}">
         <div class="delivery-date">
-          Delivery date: ${dayString}
+          Delivery date: ${pickedDeliveryDate}
         </div>
 
         <div class="cart-item-details-grid">
@@ -82,15 +79,8 @@ export function renderOrderSummary() {
     let html = '';
 
     deliveryOptions.forEach((deliveryOption) => {
-      const todaysDate = dayjs();
-      const deliveryDate = todaysDate.add(
-        deliveryOption.deliveryDays,
-        'days'
-      );
-
-      const dayString = deliveryDate.format(
-        'dddd, MMMM D'
-      );
+      const pickedDeliveryDate = calculateDeliveryDate(deliveryOption);
+      
 
       const priceString = deliveryOption.priceCents === 0
         ? 'FREE'
@@ -107,7 +97,7 @@ export function renderOrderSummary() {
             name="delivery-option-${matchingProduct.id}">
           <div>
             <div class="delivery-option-date">
-              ${dayString}
+              ${pickedDeliveryDate}
             </div>
             <div class="delivery-option-price">
               ${priceString}
@@ -128,11 +118,15 @@ export function renderOrderSummary() {
       link.addEventListener('click', () => {
         const productId = link.dataset.productId;
         removeFromCart(productId);
-        const container = document.querySelector(
-          `.js-cart-item-container-${productId}`
-        );
-        displayCartQuantity('.js-checkout-header-middle-section');
-        container.remove();
+        //const container = document.querySelector(
+         // `.js-cart-item-container-${productId}`
+        //);
+        //container.remove();
+        //displayCartQuantity('.js-checkout-header-middle-section');
+        
+        renderCheckoutHeader();
+        renderOrderSummary();
+
         renderPaymentSummary();
     });
   });
@@ -158,6 +152,10 @@ export function renderOrderSummary() {
         const newQuantity = Number(newQuantityElem.value);
           
         updateQuantity(productId, newQuantity);
+
+
+        renderOrderSummary();
+        renderPaymentSummary();
 
         document.querySelector(`.js-cart-item-container-${productId}`).classList.remove(`is-editing-quantity`);
       });

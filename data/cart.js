@@ -1,3 +1,4 @@
+import { renderCheckoutHeader } from '../scripts/checkout/checkoutHeader.js';
 import { displayValue } from '../scripts/utils/dom.js';
 
 export let cart = JSON.parse(localStorage.getItem('cart')) || [{
@@ -15,7 +16,7 @@ function saveToStorage() {
 }
 
 function saveTotalCartQuatity(cartQuantity) {
-  localStorage.setItem('totalCartQuantity', cartQuantity);
+  localStorage.setItem('totalCartQuantity', JSON.stringify(cartQuantity));
 }
 
 export function addToCart(productId) {
@@ -71,17 +72,19 @@ export function updateQuantity(productId, newQuantity) {
   cart.forEach((cartItem) => {
     if (cartItem.productId === productId && newQuantity >= minimumLimit && newQuantity <= maximumLimit) {
       let previousQuantity = cartItem.quantity;
-      cartItem.quantity = newQuantity;
-      saveToStorage();
-      calculateCartQuantity();
+      
       if (Number(getTotalCartQuantity()) <= maximumLimit) {
-        displayValue(`.js-quantity-label-${productId}`, newQuantity);
+        //displayValue(`.js-quantity-label-${productId}`, newQuantity);
 
-        localStorage.removeItem(`cartItemQuantity-${productId}`);
+        //localStorage.removeItem(`cartItemQuantity-${productId}`);
         
         //localStorage.setItem(`cartItemQuantity-${productId}`, newQuantity);
 
-        displayCartQuantity('.js-checkout-header-middle-section');
+        //displayCartQuantity('.js-checkout-header-middle-section');
+        cartItem.quantity = newQuantity;
+        saveToStorage();
+        calculateCartQuantity();
+        renderCheckoutHeader();
       } else {
         cartItem.quantity = previousQuantity;
         saveToStorage();
@@ -109,10 +112,10 @@ export function calculateCartQuantity() {
 }
 
 export function getTotalCartQuantity() {
-  let total = localStorage.getItem('totalCartQuantity') || 0;
+  let total = JSON.parse(localStorage.getItem('totalCartQuantity')) || 0;
   return total;
 }
-
+/*
 export function displayCartQuantity(selector) {
   if (calculateCartQuantity() === 0) {
     displayValue(selector, `Your cart is empty`);
@@ -122,6 +125,7 @@ export function displayCartQuantity(selector) {
     displayValue(selector, `Checkout (${getTotalCartQuantity()} items)`);
   }
 }
+*/
 
 export function updateDeliveryOption(productId, deliveryOptionId) {
   let matchingItem;
