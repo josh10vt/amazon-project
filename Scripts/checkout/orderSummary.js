@@ -9,7 +9,7 @@ import {renderCheckoutHeader} from './checkoutHeader.js';
 
 
 //displayCartQuantity('.js-checkout-header-middle-section');
-renderCheckoutHeader();
+//renderCheckoutHeader();
 
 export function renderOrderSummary() {
   let cartSummaryHTML = '';
@@ -29,8 +29,7 @@ export function renderOrderSummary() {
     
 
     cartSummaryHTML += `
-      <div class="cart-item-container 
-        js-cart-item-container-${matchingProduct.id}">
+      <div class="cart-item-container js-cart-item-container js-cart-item-container-${matchingProduct.id}">
         <div class="delivery-date">
           Delivery date: ${pickedDeliveryDate}
         </div>
@@ -46,7 +45,8 @@ export function renderOrderSummary() {
             <div class="product-price">
               $${formatCurrency(matchingProduct.priceCents)}
             </div>
-            <div class="product-quantity">
+            <div class="product-quantity
+              js-product-quantity-${matchingProduct.id}">
               <span>
                 Quantity: <span class="quantity-label js-quantity-label-${productId}">${cartItem.quantity}</span>
               </span>
@@ -57,7 +57,7 @@ export function renderOrderSummary() {
               <span class="save-quantity-link link-primary js-save-quantity-link" data-product-id="${matchingProduct.id}">
                 Save
               </span>
-              <span class="delete-quantity-link link-primary js-delete-link" 
+              <span class="delete-quantity-link link-primary js-delete-link js-delete-link-${matchingProduct.id}" 
                 data-product-id="${matchingProduct.id}">
                 Delete
               </span>
