@@ -1,6 +1,8 @@
+/*
 import { renderCheckoutHeader } from '../scripts/checkout/checkoutHeader.js';
 import { displayValue } from '../scripts/utils/dom.js';
 import {validDeliveryOption} from './deliveryOptions.js';
+*/
 
 function Cart(localStorageKey, localStorageKey2) {
   const cart = {
