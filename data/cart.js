@@ -1,5 +1,6 @@
 import { renderCheckoutHeader } from '../scripts/checkout/checkoutHeader.js';
 import { displayValue } from '../scripts/utils/dom.js';
+import {validDeliveryOption} from './deliveryOptions.js';
 
 export let cart;
 
@@ -141,6 +142,14 @@ export function updateDeliveryOption(productId, deliveryOptionId) {
       matchingItem = cartItem;
     }
   });
+
+  if (!matchingItem) {
+    return;
+  }
+
+  if (!validDeliveryOption(deliveryOptionId)) {
+    return;
+  }
 
   matchingItem.deliveryOptionId = deliveryOptionId;
   saveToStorage();
