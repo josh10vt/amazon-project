@@ -7,19 +7,19 @@ import {validDeliveryOption} from './deliveryOptions.js';
 class Cart {
   cartItems;
 
-  localStorageKey;
-  localStorageKey2;
+  #localStorageKey;
+  #localStorageKey2;
 
   constructor(localStorageKey, localStorageKey2) {
-    this.localStorageKey = localStorageKey;
-    this.localStorageKey2 = localStorageKey2;
-    this.loadFromStorage();
+    this.#localStorageKey = localStorageKey;
+    this.#localStorageKey2 = localStorageKey2;
+    this.#loadFromStorage();
     //cart.addToCart('83d4ca15-0f35-48f5-b7a3-1ea210004f2e');
     
   }
 
-  loadFromStorage() {
-    this.cartItems = JSON.parse(localStorage.getItem(this.localStorageKey)) || [{
+  #loadFromStorage() {
+    this.cartItems = JSON.parse(localStorage.getItem(this.#localStorageKey)) || [{
       productId: 'e43638ce-6aa0-4b85-b27f-e1d07eb678c6',
       quantity: 2,
       deliveryOptionId: '1'
@@ -31,11 +31,11 @@ class Cart {
   }
 
   saveToStorage() {
-    localStorage.setItem(this.localStorageKey, JSON.stringify(this.cartItems));
+    localStorage.setItem(this.#localStorageKey, JSON.stringify(this.cartItems));
   }
 
   saveTotalCartQuatity(cartQuantity) {
-    localStorage.setItem(this.localStorageKey2, JSON.stringify(cartQuantity));
+    localStorage.setItem(this.#localStorageKey2, JSON.stringify(cartQuantity));
   }
 
   addToCart(productId) {
@@ -120,7 +120,7 @@ class Cart {
   }
 
   getTotalCartQuantity() {
-    let total = JSON.parse(localStorage.getItem(this.localStorageKey2)) || 0;
+    let total = JSON.parse(localStorage.getItem(this.#localStorageKey2)) || 0;
     return total;
   }
 
