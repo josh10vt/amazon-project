@@ -9,7 +9,7 @@ import {renderCheckoutHeader} from './checkoutHeader.js';
 
 
 //displayCartQuantity('.js-checkout-header-middle-section');
-//renderCheckoutHeader();
+renderCheckoutHeader();
 
 export function renderOrderSummary() {
   let cartSummaryHTML = '';
@@ -43,7 +43,7 @@ export function renderOrderSummary() {
               ${matchingProduct.name}
             </div>
             <div class="product-price">
-              $${formatCurrency(matchingProduct.priceCents)}
+              ${matchingProduct.getPrice()}
             </div>
             <div class="product-quantity
               js-product-quantity-${matchingProduct.id}">
